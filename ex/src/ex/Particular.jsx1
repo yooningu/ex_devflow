@@ -1,0 +1,189 @@
+import React, { useState, useRef } from 'react';
+import { Heart, ChevronLeft, Share2, MoreVertical } from 'lucide-react';
+import './Particular.css';
+
+export default function ProductPage() {
+  // 이미지 배열 정의
+  const images = [
+    "./photo",
+    "/api/placeholder/400/320", 
+    "/api/placeholder/400/320"
+  ];
+  
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const touchStartX = useRef(null);
+  const touchEndX = useRef(null);
+  
+  // 다음 이미지로 이동
+  const nextSlide = () => {
+    setCurrentIndex(prevIndex => 
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+  
+  // 이전 이미지로 이동
+  const prevSlide = () => {
+    setCurrentIndex(prevIndex => 
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
+  };
+  
+  // 특정 인덱스로 이동
+  const goToSlide = (index) => {
+    setCurrentIndex(index);
+  };
+  
+  // 터치 이벤트 핸들러
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+  
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchStartX.current - touchEndX.current;
+    const isSignificantMovement = Math.abs(distance) > 50;
+    
+    if (isSignificantMovement) {
+      if (distance > 0) {
+        // 왼쪽으로 스와이프 -> 다음 이미지
+        nextSlide();
+      } else {
+        // 오른쪽으로 스와이프 -> 이전 이미지
+        prevSlide();
+      }
+    }
+    
+    // 터치 위치 초기화
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
+  return (
+    <div className="flex flex-col h-screen bg-gray-100 relative">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 bg-white p-3 flex justify-between items-center z-10 shadow-sm">
+        <ChevronLeft size={24} />
+        <div className="flex items-center">
+          <Share2 size={20} className="mr-4" />
+          <MoreVertical size={20} />
+        </div>
+      </div>
+
+      {/* Content with padding for fixed header */}
+      <div className="flex-1 overflow-auto pt-14 pb-16">
+        {/* Product Image Slider */}
+        <div 
+          className="relative bg-gray-700 h-96 overflow-hidden touch-pan-x"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Main Image with Animation */}
+          <div 
+            className="flex transition-transform duration-300 ease-out h-full"
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
+            {images.map((src, index) => (
+              <div key={index} className="min-w-full h-full flex-shrink-0">
+                <img 
+                  src={src} 
+                  alt={`Product image ${index + 1}`} 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+          
+          {/* Pagination Dots */}
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex">
+            {images.map((_, index) => (
+              <button 
+                key={index} 
+                className={`w-2 h-2 mx-1 rounded-full ${currentIndex === index ? 'bg-white' : 'bg-white bg-opacity-50'}`}
+                onClick={() => goToSlide(index)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Product Info */}
+        <div className="bg-white p-4">
+          <div className="mb-2 text-sm text-gray-600">보노보노</div>
+          <div className="mb-1 text-sm text-gray-600">활용하세요 포지티브 가이드</div>
+          
+          {/* Rating */}
+          <div className="flex items-center mb-3">
+            <div className="flex">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span key={star} className="text-yellow-400">★</span>
+              ))}
+            </div>
+            <span className="text-sm ml-1">4.9</span>
+            <span className="text-xs text-gray-500 ml-1">(176명)</span>
+          </div>
+
+          {/* Product Title & Price */}
+          <div className="font-bold mb-1">와이드 핏 팬츠</div>
+          <div className="text-xl font-bold mb-4">3,500원 <span className="text-sm font-normal">/ 3일</span></div>
+          
+          {/* Additional Korean Text */}
+          <div className="text-xs text-gray-500 mb-4">상세정보상세정보상세정보상세정보상세정보상세정보</div>
+          
+          {/* Tags */}
+          <div className="flex flex-wrap mb-6">
+            <span className="text-xs mr-2 mb-2 px-3 py-1 bg-gray-100 rounded-full">새상품</span>
+            <span className="text-xs mr-2 mb-2 px-3 py-1 bg-gray-100 rounded-full">프리컷</span>
+            <span className="text-xs mr-2 mb-2 px-3 py-1 bg-gray-100 rounded-full">바지</span>
+            <span className="text-xs mr-2 mb-2 px-3 py-1 bg-gray-100 rounded-full">기타의류</span>
+            <span className="text-xs mr-2 mb-2 px-3 py-1 bg-gray-100 rounded-full">빈티지</span>
+          </div>
+          
+          {/* Size Specifications */}
+          <div className="mb-6">
+            <div className="text-sm mb-2">착용자 사이즈</div>
+            <div className="flex text-xs text-gray-600">
+              <div className="mr-4">
+                <span className="font-medium">size</span>
+                <span className="ml-2">XL</span>
+              </div>
+              <div className="mr-4">
+                <span className="font-medium">키</span>
+                <span className="ml-2">175</span>
+              </div>
+              <div>
+                <span className="font-medium">몸 무게</span>
+                <span className="ml-2">75</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Extra space for fixed footer */}
+          <div className="h-8"></div>
+        </div>
+      </div>
+
+      {/* Fixed Footer Buttons */}
+      <div className="fixed bottom-0 left-0 right-0 flex border-t border-gray-200 h-14 bg-white z-10">
+        <button className="flex items-center justify-center w-14 border-r border-gray-200">
+          <Heart size={24} className="text-gray-400" />
+        </button>
+        <button className="flex-1 bg-white text-green-500 font-medium border-r border-gray-200">
+          채팅하기
+        </button>
+        <button className="flex-1 bg-green-500 text-white font-medium">
+          거래하기
+        </button>
+      </div>
+      
+      {/* Font Note */}
+      <div className="fixed bottom-14 left-0 right-0 text-xs p-1 bg-gray-100 text-gray-600">
+        New available font: Amaranth
+      </div>
+    </div>
+  );
+}
