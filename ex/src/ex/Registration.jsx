@@ -20,6 +20,10 @@ const ProductRegistrationForm = () => {
 
 
 
+
+
+
+
   //-------------------------------------------------------------------------사진 추가, 제거
   const handleImageUpload = (e) => {
     if (e.target.files) {
@@ -31,9 +35,14 @@ const ProductRegistrationForm = () => {
       setImages(prev => [...prev, ...newImages]);//새 이미지 기존 배열에 추가
     }
   };
+
+
   const removeImage = (id) => {
     setImages(images.filter(image => image.id !== id));
   };// 이미지 제거
+
+
+
 
 
   //--------------------------------------테그 설정
@@ -53,7 +62,8 @@ const ProductRegistrationForm = () => {
 
 
   return (
-    <div className="product-registration-container">
+    <div className="product-registration-container"> {/*------------------------------------------------------------ */}
+     
       {/* 헤더------------------------------------------------------------ */}
       <div className="header">
         <button className="back-button"><ChevronLeft size={35} /></button>
@@ -62,10 +72,7 @@ const ProductRegistrationForm = () => {
 
 
 
-
-      <form className="registration-form">{/*  폼 시작 */}
-
-      
+      <form className="registration-form">{/*  폼 시작 -------------------------------------*/}
 
         {/* 이미지 -------------------------------------------------*/}
         <section className="form-section image-section">
@@ -73,6 +80,7 @@ const ProductRegistrationForm = () => {
           <div className="image-container">
             <label className="image-upload-button">
               <div className="plus-icon"><CirclePlus size={35} /></div>
+
               <input 
                 type="file" 
                 accept="image/*" 
@@ -82,6 +90,7 @@ const ProductRegistrationForm = () => {
               />
             </label>
             
+            {/* ㅇㅇㅇ*/}
             {images.map(image => (
               <div className="thumbnail" key={image.id}>
                 <img src={image.url} alt="상품 이미지" />
@@ -90,7 +99,7 @@ const ProductRegistrationForm = () => {
                   className="remove-image" 
                   onClick={() => removeImage(image.id)}
                 >
-                  ×
+                  
                 </button>
               </div>
             ))}
@@ -128,9 +137,11 @@ const ProductRegistrationForm = () => {
 
 
 
+
           <div className="form-group">
             <label>판매 기간</label>
             <div className="calendar-picker">
+
               <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
@@ -139,6 +150,7 @@ const ProductRegistrationForm = () => {
                 endDate={endDate}
                 placeholderText="시작일"
               />
+
               <DatePicker
                 selected={endDate}
                 onChange={(date) => setEndDate(date)}
@@ -148,8 +160,10 @@ const ProductRegistrationForm = () => {
                 minDate={startDate}
                 placeholderText="종료일"
               />
+
             </div>
           </div>
+
 
 
 
@@ -165,6 +179,8 @@ const ProductRegistrationForm = () => {
             ></textarea>
           </div>
         </section>
+
+
 
 
 
